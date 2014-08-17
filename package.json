@@ -1,5 +1,5 @@
 {
-  "description": "Node.JS Step Motor Driver based on Allegro A4938",
+  "description": "Node.JS Step Motor Driver based on Allegro A4983",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "sudo node app.js 8080"
   },
-  "name": "StepMotorA4938",
+  "name": "StepMotorA4983",
   "author": "Nelson Neves",
   "homepage": "http://www.botdream.com"
 }
