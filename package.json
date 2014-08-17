@@ -1,0 +1,16 @@
+{
+  "description": "Node.JS Step Motor Driver based on Allegro A4938",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "native-gpio": "*"
+  },
+  "devDependenices": {
+  },
+  "scripts": {
+    "start": "sudo node app.js 8080"
+  },
+  "name": "StepMotorA4938",
+  "author": "Nelson Neves",
+  "homepage": "http://www.botdream.com"
+}
