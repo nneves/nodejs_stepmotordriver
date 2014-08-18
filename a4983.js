@@ -6,8 +6,14 @@ var HIGH = gpio.HIGH;
 var LOW = gpio.LOW;
 var ON = gpio.HIGH;
 var OFF = gpio.LOW;
+var OUT = gpio.OUT;
+var IN = gpio.IN;
 var Clockwise = gpio.LOW;
 var CounterClockwise = gpio.HIGH;
+
+var fMotorEnable = 0;		// flag to Enable/Disable Step Motor, 0 => Disable, 1 => Enable
+var fMotorDirection = 0;	// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
+var kDelay = 1;				// delay constant in mili-seconds (Step Motor Speed)
 
 // mapping default values of GPIOs
 var Dir = new gpio.GPIO(23);		// direction of movement
@@ -19,16 +25,14 @@ var nEnable = new gpio.GPIO(27);	// must be LOW to make it work
 //var MS2 = new gpio.GPIO(18);
 //var MS1 = new gpio.GPIO(17);
 
-Dir.direction(1);
-Dir.direction(gpio.OUT);
-
-Step.direction(gpio.OUT);
-nSleep.direction(gpio.OUT);
-nReset.direction(gpio.OUT);
-nEnable.direction(gpio.OUT);
-//MS3.direction(gpio.OUT);
-//MS2.direction(gpio.OUT);
-//MS1.direction(gpio.OUT);
+Dir.direction(OUT);
+Step.direction(OUT);
+nSleep.direction(OUT);
+nReset.direction(OUT);
+nEnable.direction(OUT);
+//MS3.direction(OUT);
+//MS2.direction(OUT);
+//MS1.direction(OUT);
 
 function initialize () {
 
@@ -55,11 +59,19 @@ function initialize () {
   Step.value(LOW);
 
   //wait(0.5);
- 
-  //f_motor_enable = 0;    // flag to Enable/Disable Step Motor, 0 => Disable, 1 => Enable
-  //f_motor_direction = 0; // flag for the Step Motor direction, 0 => Normal, 1 => Inverted
-  //k_delay = 0.001;       // delay constant in seconds (Step Motor Speed)
+};
 
+function step() {
+/*
+	if(Dir != f_motor_direction)
+	Dir = f_motor_direction;
+
+	Step = HIGH;
+	wait(k_delay/2);
+
+	Step = LOW;
+	wait(k_delay/2);
+*/
 };
 
 function sample () {
