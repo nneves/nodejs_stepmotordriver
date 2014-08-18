@@ -1,12 +1,13 @@
-var gpio = require('native-gpio');
+//var gpio = require('native-gpio');
+var gpio = require('./emulate-native-gpio.js');
 
 // setting constants values
 var HIGH = gpio.HIGH;
 var LOW = gpio.LOW;
 var ON = gpio.HIGH;
 var OFF = gpio.LOW;
-var Clockwise = LOW;
-var CounterClockwise = HIGH;
+var Clockwise = gpio.LOW;
+var CounterClockwise = gpio.HIGH;
 
 // mapping default values of GPIOs
 var Dir = new gpio.GPIO(23);		// direction of movement
@@ -18,7 +19,9 @@ var nEnable = new gpio.GPIO(27);	// must be LOW to make it work
 //var MS2 = new gpio.GPIO(18);
 //var MS1 = new gpio.GPIO(17);
 
+Dir.direction(1);
 Dir.direction(gpio.OUT);
+
 Step.direction(gpio.OUT);
 nSleep.direction(gpio.OUT);
 nReset.direction(gpio.OUT);
@@ -35,7 +38,7 @@ function initialize () {
   // initialisation of power stage
   Dir.value(CounterClockwise);
   Step.value(LOW);
-  nSleep..value(HIGH);
+  nSleep.value(HIGH);
   nEnable.value(HIGH);
   nReset.value(LOW);
 
