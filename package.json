@@ -5,8 +5,7 @@
   "dependencies": {
     "native-gpio": "*"
   },
-  "devDependenices": {
-  },
+  "devDependenices": {},
   "scripts": {
     "start": "sudo node app.js 8080"
   },
