@@ -1,5 +1,5 @@
-//var Gpio = require('onoff').Gpio;  
-var Gpio = require('./emulate-onoff.js').Gpio;
+var Gpio = require('onoff').Gpio;  
+//var Gpio = require('./emulate-onoff.js').Gpio;
 
 // setting constants values
 var HIGH = 1;
@@ -26,7 +26,7 @@ var Dir = new Gpio(48, 'out');		// direction of movement
 var Step = new Gpio(49, 'out');		// make one step at rising edge
 var nSleep = new Gpio(20, 'out');	// must be HIGH to make it work
 var nReset = new Gpio(60, 'out'); 	// must be HIGH to make it work
-var nEnable = new Gpio(00, 'out');	// must be LOW to make it work
+var nEnable = new Gpio(7, 'out');	// must be LOW to make it work
 //var MS3 = new Gpio(0, 'out');		// (optional) microstep mode selectors
 //var MS2 = new Gpio(0, 'out');
 //var MS1 = new Gpio(0, 'out');
@@ -80,8 +80,8 @@ function autostep() {
   }
 
   icounter++;
-  if(icounter % 10 === 0 && itimer > 0) {
-  	itimer -= 50;
+  if(icounter % 50 === 0 && itimer > 0) {
+  	itimer -= 10;
   	if(itimer <= 0)
   		itimer = 1;
   }
