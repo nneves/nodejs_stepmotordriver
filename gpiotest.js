@@ -1,4 +1,5 @@
-var Gpio = require('onoff').Gpio;  // Constructor function for Gpio objects.
+//var Gpio = require('onoff').Gpio;  // Constructor function for Gpio objects.
+var Gpio = require('./emulate-onoff.js').Gpio;  // Constructor function for Gpio objects.
 var led1 = new Gpio(48, 'out');    // Export GPIO #48  as an output.
 var led2 = new Gpio(49, 'out');    // Export GPIO #49  as an output.
 var led3 = new Gpio(20, 'out');    // Export GPIO #10  as an output.
@@ -19,7 +20,7 @@ iv = setInterval(function() {
 setTimeout(function() {
     clearInterval(iv); // Stop blinking
     exit();
-}, 60000);
+}, 5000);
 
 
 function exit() {
