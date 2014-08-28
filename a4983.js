@@ -1,15 +1,15 @@
-var gpio = require('native-gpio');
-//var gpio = require('./emulate-native-gpio.js');
+//var Gpio = require('onoff').Gpio;  
+var Gpio = require('./emulate-onoff.js').Gpio;
 
 // setting constants values
-var HIGH = gpio.HIGH;
-var LOW = gpio.LOW;
-var ON = gpio.HIGH;
-var OFF = gpio.LOW;
-var OUT = gpio.OUT;
-var IN = gpio.IN;
-var Clockwise = gpio.LOW;
-var CounterClockwise = gpio.HIGH;
+var HIGH = 1;
+var LOW = 0;
+var ON = 1;
+var OFF = 0;
+var OUT = 'out';
+var IN = 'in';
+var Clockwise = 1;
+var CounterClockwise = 0;
 
 var fMotorEnable = 0;		// flag to Enable/Disable Step Motor, 0 => Disable, 1 => Enable
 var fMotorDirection = 0;	// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
@@ -17,25 +17,19 @@ var kDelay = 1;				// delay constant in mili-seconds (Step Motor Speed)
 
 var istep = 0;
 var itimer = 500;
+var icounter = 0;
 
 // mapping default values of GPIOs
-var Dir = new gpio.GPIO(23);		// direction of movement
-var Step = new gpio.GPIO(48);		// make one step at rising edge
-var nSleep = new gpio.GPIO(25);		// must be HIGH to make it work
-var nReset = new gpio.GPIO(26); 	// must be HIGH to make it work
-var nEnable = new gpio.GPIO(27);	// must be LOW to make it work
-//var MS3 = new gpio.GPIO(19);		// (optional) microstep mode selectors
-//var MS2 = new gpio.GPIO(18);
-//var MS1 = new gpio.GPIO(17);
+var led1 = new Gpio(48, 'out');
 
-Dir.direction(OUT);
-Step.direction(OUT);
-nSleep.direction(OUT);
-nReset.direction(OUT);
-nEnable.direction(OUT);
-//MS3.direction(OUT);
-//MS2.direction(OUT);
-//MS1.direction(OUT);
+var Dir = new Gpio(48, 'out');		// direction of movement
+var Step = new Gpio(49, 'out');		// make one step at rising edge
+var nSleep = new Gpio(20, 'out');	// must be HIGH to make it work
+var nReset = new Gpio(60, 'out'); 	// must be HIGH to make it work
+var nEnable = new Gpio(00, 'out');	// must be LOW to make it work
+//var MS3 = new Gpio(0, 'out');		// (optional) microstep mode selectors
+//var MS2 = new Gpio(0, 'out');
+//var MS1 = new Gpio(0, 'out');
 
 function initialize () {
 
@@ -43,28 +37,28 @@ function initialize () {
   //adjust_microstepping_mode(16);
 
   // initialisation of power stage
-  Dir.value(CounterClockwise);
-  Step.value(LOW);
-  nSleep.value(HIGH);
-  nEnable.value(HIGH);
-  nReset.value(LOW);
+  Dir.writeSync(CounterClockwise);
+  Step.writeSync(LOW);
+  nSleep.writeSync(HIGH);
+  nEnable.writeSync(HIGH);
+  nReset.writeSync(LOW);
 
   //wait(0.5);
-  nReset.value(HIGH);
+  nReset.writeSync(HIGH);
 
   //wait(0.5);
-  nEnable.value(LOW);
+  nEnable.writeSync(LOW);
 
   //wait(0.5);
-  Step.value(HIGH);
+  Step.writeSync(HIGH);
 
   //wait(0.5);
-  Step.value(LOW);
+  Step.writeSync(LOW);
 
   //wait(0.5);
 };
 
-function step() {
+function autostep() {
 /*
 	if(Dir != f_motor_direction)
 	Dir = f_motor_direction;
@@ -77,28 +71,25 @@ function step() {
 */
 
   if(istep === 0) {
-    Step.value(HIGH);
+    Step.writeSync(HIGH);
     istep = 1;
   }
   else {
-    Step.value(LOW);
+    Step.writeSync(LOW);
     istep = 0;
   }
 
-  setTimeout(step, itimer); 
+  icounter++;
+  if(icounter % 10 === 0 && itimer > 0) {
+  	itimer -= 50;
+  	if(itimer <= 0)
+  		itimer = 1;
+  }
+  setTimeout(autostep, itimer); 
 };
 
-function sample () {
-
-	var gpio22 = new gpio.GPIO(22);
-
-	gpio22.direction(gpio.OUT)
-	     .value(gpio.HIGH)
-	     .value(gpio.LOW)
-	     .value(gpio.HIGH);
-};
 
 module.exports = {
-	sample : sample,
-        step: step
+	initialize : initialize,
+	autostep: autostep
 };

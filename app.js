@@ -1,4 +1,4 @@
 var stepmotor = require('./a4983.js');
 
-//stepmotor.sample();
-stepmotor.step();
+stepmotor.initialize();
+stepmotor.autostep();
