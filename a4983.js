@@ -1,5 +1,5 @@
-//var gpio = require('native-gpio');
-var gpio = require('./emulate-native-gpio.js');
+var gpio = require('native-gpio');
+//var gpio = require('./emulate-native-gpio.js');
 
 // setting constants values
 var HIGH = gpio.HIGH;
@@ -15,9 +15,12 @@ var fMotorEnable = 0;		// flag to Enable/Disable Step Motor, 0 => Disable, 1 => 
 var fMotorDirection = 0;	// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
 var kDelay = 1;				// delay constant in mili-seconds (Step Motor Speed)
 
+var istep = 0;
+var itimer = 500;
+
 // mapping default values of GPIOs
 var Dir = new gpio.GPIO(23);		// direction of movement
-var Step = new gpio.GPIO(24);		// make one step at rising edge
+var Step = new gpio.GPIO(48);		// make one step at rising edge
 var nSleep = new gpio.GPIO(25);		// must be HIGH to make it work
 var nReset = new gpio.GPIO(26); 	// must be HIGH to make it work
 var nEnable = new gpio.GPIO(27);	// must be LOW to make it work
@@ -72,6 +75,17 @@ function step() {
 	Step = LOW;
 	wait(k_delay/2);
 */
+
+  if(istep === 0) {
+    Step.value(HIGH);
+    istep = 1;
+  }
+  else {
+    Step.value(LOW);
+    istep = 0;
+  }
+
+  setTimeout(step, itimer); 
 };
 
 function sample () {
@@ -85,5 +99,6 @@ function sample () {
 };
 
 module.exports = {
-	sample : sample
+	sample : sample,
+        step: step
 };
