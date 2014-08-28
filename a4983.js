@@ -1,5 +1,5 @@
-var Gpio = require('onoff').Gpio;  
-//var Gpio = require('./emulate-onoff.js').Gpio;
+//var Gpio = require('onoff').Gpio;  
+var Gpio = require('./emulate-onoff.js').Gpio;
 
 // setting constants values
 var HIGH = 1;
