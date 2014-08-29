@@ -1,5 +1,7 @@
-//var Gpio = require('onoff').Gpio;  
-var Gpio = require('./emulate-onoff.js').Gpio;
+var Gpio = require('onoff').Gpio;  
+//var Gpio = require('./emulate-onoff.js').Gpio;
+
+var sleep = require('sleep');
 
 // setting constants values
 var HIGH = 1;
@@ -13,10 +15,10 @@ var CounterClockwise = 0;
 
 var fMotorEnable = 0;		// flag to Enable/Disable Step Motor, 0 => Disable, 1 => Enable
 var fMotorDirection = 0;	// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
-var kDelay = 1;				// delay constant in mili-seconds (Step Motor Speed)
+var kDelay = 1;			// delay constant in mili-seconds (Step Motor Speed)
 
 var istep = 0;
-var itimer = 500;
+var itimer = 50;
 var icounter = 0;
 
 // mapping default values of GPIOs
@@ -58,7 +60,7 @@ function initialize () {
   //wait(0.5);
 };
 
-function autostep() {
+function autostep_x() {
 /*
 	if(Dir != f_motor_direction)
 	Dir = f_motor_direction;
@@ -79,15 +81,26 @@ function autostep() {
     istep = 0;
   }
 
+/*
   icounter++;
   if(icounter % 50 === 0 && itimer > 0) {
   	itimer -= 10;
   	if(itimer <= 0)
   		itimer = 1;
   }
+*/
   setTimeout(autostep, itimer); 
 };
 
+function autostep() {
+  
+  for(var i=0; i<999999999; ++i) {
+    Step.writeSync(HIGH);
+    sleep.usleep(itimer);
+    Step.writeSync(LOW);
+    sleep.usleep(itimer);
+  }
+};
 
 module.exports = {
 	initialize : initialize,
