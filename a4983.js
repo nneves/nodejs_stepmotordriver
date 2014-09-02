@@ -6,6 +6,8 @@ var sleep = require('sleep');
 //------------------------------------------------------------------
 // setting constants values
 //------------------------------------------------------------------
+var fDebbug = 1;
+
 var HIGH = 1;
 var LOW = 0;
 var ON = 1;
@@ -15,9 +17,9 @@ var IN = 'in';
 var Clockwise = 1;
 var CounterClockwise = 0;
 
-var fMotorEnable = 0;		// flag to Enable/Disable Step Motor, 0 => Disable, 1 => Enable
-var fMotorDirection = 0;	// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
-var kDelay = 1000000;		// delay constant in mili-seconds (Step Motor Speed)
+var fAutoStep = 0;		// flag to Enable/Disable auto Step Motor motion, 0 => Disable, 1 => Enable
+var fDirection = 0;		// flag for the Step Motor direction, 0 => Normal, 1 => Inverted
+var tPulse = 1000000;	// step pulse time in micro-seconds (Step Motor Speed)
 
 var util = require('util');
 var eventemitter = require('events').EventEmitter;
@@ -60,6 +62,11 @@ var nEnable = new Gpio(7, 'out');	// must be LOW to make it work
 
 //------------------------------------------------------------------
 
+function debbug(str) {
+	if(fDebbug === 1)
+		console.log(str);
+};
+
 function initialize () {
 
   // adjust microstepping mode
@@ -72,32 +79,72 @@ function initialize () {
   nEnable.writeSync(HIGH);
   nReset.writeSync(LOW);
 
-  //wait(0.5);
+  var initTime = 200000;
+  sleep.usleep(initTime);
   nReset.writeSync(HIGH);
 
-  //wait(0.5);
+  sleep.usleep(initTime);
   nEnable.writeSync(LOW);
 
-  //wait(0.5);
+  sleep.usleep(initTime);
   Step.writeSync(HIGH);
 
-  //wait(0.5);
+  sleep.usleep(initTime);
   Step.writeSync(LOW);
-
-  //wait(0.5);
+  sleep.usleep(initTime);
 };
 
 function step() {
-  
+	debbug("[a4983.js]:step()");
     Step.writeSync(HIGH);
-    sleep.usleep(kDelay);
+    sleep.usleep(tPulse);
     Step.writeSync(LOW);
-    sleep.usleep(kDelay);
+    sleep.usleep(tPulse);
 
-    evnt.emmitStep();
+    if(fAutoStep === 1)
+    	process.nextTick(step);
+    	//process.nextTick(evnt.emmitStep());
+};
+
+function start() {
+	debbug("[a4983.js]:start()");
+	fAutoStep = 1;
+	process.nextTick(step);
+};
+
+function stop() {
+	debbug("[a4983.js]:stop()");
+	fAutoStep = 0;
+};
+
+function setSpeed(usTime) {
+	debbug("[a4983.js]:setSpeed("+usTime.toString()+")");
+	tPulse = usTime;
+};
+
+function setDirection(iDir) {
+	if(iDir === Clockwise){
+		debbug("[a4983.js]:setDirection(Clockwise)");
+		fDirection = iDir;
+		Dir.writeSync(fDirection);
+	}
+	else if(iDir === CounterClockwise) {
+		debbug("[a4983.js]:setDirection(CounterClockwise)");
+		fDirection = iDir;
+		Dir.writeSync(fDirection);
+	}
+	else {
+		debbug("[a4983.js]:setDirection(???)");
+	}
 };
 
 module.exports = {
-	initialize : initialize,
-	step: step
+	Clockwise: Clockwise,
+	CounterClockwise: CounterClockwise,
+	initialize: initialize,
+	step: step,
+	start: start,
+	stop: stop,
+	setSpeed: setSpeed,
+	setDirection: setDirection
 };

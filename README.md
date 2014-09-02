@@ -13,3 +13,5 @@ P9_L21			GPIO_20				nSLEEP
 P9_R6			GPIO_60				nRESET
 P9_R21			GPIO_7				nENABLE
 ```
+
+NOTE: do not use this module, synchronous call of usleep is blocking node.js process and WS messages will not be processed ... keeping this repository for tracking, should create a dedicated GPIO c/c++ independet module instead!!!
